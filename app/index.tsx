@@ -1,3 +1,8 @@
-import { LoginScreen } from "@/src/features/auth/ui/screens/LoginScreen";
+import { Redirect } from "expo-router";
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
 
-export default LoginScreen;
+export default function Index() {
+  const { isAuthenticated } = useAuth();
+
+  return <Redirect href={isAuthenticated ? "/(app)" : "/login"} />;
+}

@@ -13,10 +13,10 @@ interface InputBarProps {
 
 export const InputBar: React.FC<InputBarProps> = ({ placeholder, icon, isPassword, value, onChangeText, className, helperText, isShowHelperText }) => {
   return (
-    <View className="flex-1 gap-1">
-      <View className={`flex-row items-center gap-2 ${className}`}>
+    <View className="gap-1">
+      <View className={`flex-row gap-2 items-center ${className}`}>
         {icon}
-        <TextInput className="flex-1" placeholder={placeholder} secureTextEntry={isPassword} value={value} onChangeText={onChangeText} />
+        <TextInput className="flex-1 border border-white h-10 rounded-[20px] bg-gray-500/20 px-4" placeholder={placeholder} secureTextEntry={isPassword} value={value} onChangeText={onChangeText} />
       </View>
       {isShowHelperText && <Text className="text-sm text-gray-500">{`! ${helperText}`}</Text>}
     </View>

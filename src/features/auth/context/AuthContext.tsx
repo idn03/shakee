@@ -28,7 +28,7 @@ export const AuthContextProvider = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    
+
   }, []);
 
   const login = async (email: string, password: string) => {
