@@ -28,7 +28,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization"
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": ["en", "vi"],
+            "android": ["en", "vi"]
+          }
+        }
+      ]
     ],
     "scheme": "shakee",
     "experiments": {
