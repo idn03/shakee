@@ -2,7 +2,7 @@
 
 Yellow Light - #FFFCE1
 Red - 
-Green -
+Green - #76C457
 Blue -
 White - #FFFFFF
 Black - #0A0A0A
