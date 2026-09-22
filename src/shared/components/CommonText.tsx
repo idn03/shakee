@@ -10,7 +10,7 @@ interface CommonTextProps {
 export const CommonText: React.FC<CommonTextProps> = ({value, sizeNumber, color = "#FFFFFF", className}) => {
   return (
     <Text
-      className={`${className ?? ""}`}
+      className={`leading-[1.5] ${className ?? ""}`}
       style={{ color, ...(sizeNumber ? { fontSize: sizeNumber } : {}) }}
     >
       {value}
