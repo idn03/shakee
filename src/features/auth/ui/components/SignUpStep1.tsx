@@ -7,9 +7,14 @@ import { CommonText } from "@/src/shared/components/CommonText";
 interface SignUpStep1Props {
   email: string;
   onChangeEmail: (text: string) => void;
-};
+  emailError?: string;
+}
 
-export const SignUpStep1: React.FC<SignUpStep1Props> = ({email, onChangeEmail}) => {
+export const SignUpStep1: React.FC<SignUpStep1Props> = ({
+  email,
+  onChangeEmail,
+  emailError,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -17,17 +22,14 @@ export const SignUpStep1: React.FC<SignUpStep1Props> = ({email, onChangeEmail}) 
       <CommonText value={t("auth.step1Alert")} />
 
       <InputBar
-          placeholder="Email"
-          icon={
-            <Mail
-              size={20}
-              color={'#FFFFFF'}
-            />
-          }
-          isPassword={false}
-          value={email}
-          onChangeText={onChangeEmail}
-        />
+        placeholder="Email"
+        icon={<Mail size={20} color={"#FFFFFF"} />}
+        isPassword={false}
+        value={email}
+        onChangeText={onChangeEmail}
+        helperText={emailError}
+        isShowHelperText={Boolean(emailError)}
+      />
     </View>
   );
 };

@@ -2,16 +2,33 @@ import { useState } from "react";
 import { View, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "@/src/i18n";
-import { Mail, KeyRound } from 'lucide-react-native';
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
+import { isEmail, isPasswordFormat } from "@/src/shared/utils/validators";
+import { Mail, KeyRound } from "lucide-react-native";
 import { AuthHeader, InputBar, LoginButton } from "../components";
 import { CommonText } from "@/src/shared/components/CommonText";
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const isEmailValid = isEmail(email);
+  const isPasswordValid = isPasswordFormat(password);
+
+  const handleLogin = async () => {
+    setHasSubmitted(true);
+
+    if (!isEmailValid || !isPasswordValid) {
+      return;
+    }
+
+    await login(email.trim(), password);
+  };
 
   return (
     <View>
@@ -27,30 +44,26 @@ export const LoginScreen = () => {
       <View className="mt-10 gap-10 px-8">
         <InputBar
           placeholder="Email"
-          icon={
-            <Mail
-              size={20}
-              color={'#FFFFFF'}
-            />
-          }
+          icon={<Mail size={20} color={"#FFFFFF"} />}
           isPassword={false}
           value={email}
           onChangeText={setEmail}
+          helperText={t("auth.invalidEmail")}
+          isShowHelperText={hasSubmitted && !isEmailValid}
         />
 
         <InputBar
           placeholder={t("password")}
-          icon={
-            <KeyRound
-              size={20}
-              color={'#FFFFFF'}
-            />
-          }
+          icon={<KeyRound size={20} color={"#FFFFFF"} />}
           isPassword
           showPassword={showPassword}
-          onTogglePassword={() => setShowPassword((currentValue) => !currentValue)}
+          onTogglePassword={() =>
+            setShowPassword((currentValue) => !currentValue)
+          }
           value={password}
           onChangeText={setPassword}
+          helperText={t("auth.invalidPassword")}
+          isShowHelperText={hasSubmitted && !isPasswordValid}
         />
       </View>
 
@@ -58,14 +71,15 @@ export const LoginScreen = () => {
       <View className="mt-10 px-8 flex-row justify-between">
         <View className="flex-col gap-1 mt-[-10px]">
           <CommonText value={t("auth.dontHaveAccount")} />
-          <Pressable
-            onPress={() => router.push("/sign-up")}
-          >
-            <CommonText value={t("auth.pressHere")} className="font-bold underline" />
+          <Pressable onPress={() => router.push("/sign-up")}>
+            <CommonText
+              value={t("auth.pressHere")}
+              className="font-bold underline"
+            />
           </Pressable>
         </View>
 
-        <LoginButton email={email} password={password} />
+        <LoginButton onPress={handleLogin} />
       </View>
     </View>
   );

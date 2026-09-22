@@ -9,9 +9,18 @@ interface SignUpStep2Props {
   onChangeUsername: (text: string) => void;
   password: string;
   onChangePassword: (text: string) => void;
+  usernameError?: string;
+  passwordError?: string;
 }
 
-export const SignUpStep2: React.FC<SignUpStep2Props> = ({ username, onChangeUsername, password, onChangePassword }) => {
+export const SignUpStep2: React.FC<SignUpStep2Props> = ({
+  username,
+  onChangeUsername,
+  password,
+  onChangePassword,
+  usernameError,
+  passwordError,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -24,28 +33,22 @@ export const SignUpStep2: React.FC<SignUpStep2Props> = ({ username, onChangeUser
 
       <InputBar
         placeholder={t("username")}
-        icon={
-          <User
-            size={20}
-            color={'#FFFFFF'}
-          />
-        }
+        icon={<User size={20} color={"#FFFFFF"} />}
         isPassword={false}
         value={username}
         onChangeText={onChangeUsername}
+        helperText={usernameError}
+        isShowHelperText={Boolean(usernameError)}
       />
 
       <InputBar
         placeholder={t("password")}
-        icon={
-          <KeyRound
-            size={20}
-            color={'#FFFFFF'}
-          />
-        }
+        icon={<KeyRound size={20} color={"#FFFFFF"} />}
         isPassword={true}
         value={password}
         onChangeText={onChangePassword}
+        helperText={passwordError}
+        isShowHelperText={Boolean(passwordError)}
       />
     </View>
   );

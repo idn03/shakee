@@ -4,6 +4,11 @@ import { useRouter } from "expo-router";
 import { useTranslation } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import {
+  isEmail,
+  isPasswordFormat,
+  isUsername,
+} from "@/src/shared/utils/validators";
+import {
   AuthHeader,
   ProgressBar,
   SignUpFooter,
@@ -22,6 +27,22 @@ export const SignUpScreen = () => {
   const [password, setPassword] = useState("");
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [attemptedStep, setAttemptedStep] = useState<0 | 1 | 2 | 3>(0);
+
+  const isEmailValid = isEmail(email);
+  const isUsernameValid = isUsername(username);
+  const isPasswordValid = isPasswordFormat(password);
+
+  const isStepValid = (step: 1 | 2 | 3) => {
+    switch (step) {
+      case 1:
+        return isEmailValid;
+      case 2:
+        return isUsernameValid && isPasswordValid;
+      case 3:
+        return true;
+    }
+  };
 
   const handleBack = () => {
     if (currentStep > 1) {
@@ -37,6 +58,12 @@ export const SignUpScreen = () => {
   };
 
   const handlePrimaryPress = async () => {
+    setAttemptedStep(currentStep);
+
+    if (!isStepValid(currentStep)) {
+      return;
+    }
+
     if (currentStep < 3) {
       setCurrentStep((step) => (step + 1) as 1 | 2 | 3);
       return;
@@ -54,7 +81,17 @@ export const SignUpScreen = () => {
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 1:
-        return <SignUpStep1 email={email} onChangeEmail={setEmail} />;
+        return (
+          <SignUpStep1
+            email={email}
+            onChangeEmail={setEmail}
+            emailError={
+              attemptedStep === 1 && !isEmailValid
+                ? t("auth.invalidEmail")
+                : undefined
+            }
+          />
+        );
       case 2:
         return (
           <SignUpStep2
@@ -62,14 +99,21 @@ export const SignUpScreen = () => {
             onChangeUsername={setUsername}
             password={password}
             onChangePassword={setPassword}
+            usernameError={
+              attemptedStep === 2 && !isUsernameValid
+                ? t("auth.invalidUsername")
+                : undefined
+            }
+            passwordError={
+              attemptedStep === 2 && !isPasswordValid
+                ? t("auth.invalidPassword")
+                : undefined
+            }
           />
         );
       case 3:
         return (
-          <SignUpStep3
-            avatarUri={avatarUri}
-            onChangeAvatar={setAvatarUri}
-          />
+          <SignUpStep3 avatarUri={avatarUri} onChangeAvatar={setAvatarUri} />
         );
     }
   };
