@@ -1,22 +1,27 @@
 import { useState } from "react";
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "@/src/i18n";
 import { Mail, KeyRound } from 'lucide-react-native';
 import { AuthHeader, InputBar, LoginButton } from "../components";
+import { CommonText } from "@/src/shared/components/CommonText";
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View>
       <AuthHeader title={t("auth.login")} />
-      <Text className="text-white font-bold text-center mt-1">
-        {t("auth.welcome")}
-      </Text>
+      <CommonText
+        value={t("auth.welcome")}
+        className="mt-1 text-center font-bold"
+      />
+
+      <View className="h-[80px]" />
 
       {/* Input Section */}
       <View className="mt-10 gap-10 px-8">
@@ -42,6 +47,8 @@ export const LoginScreen = () => {
             />
           }
           isPassword
+          showPassword={showPassword}
+          onTogglePassword={() => setShowPassword((currentValue) => !currentValue)}
           value={password}
           onChangeText={setPassword}
         />
@@ -50,14 +57,14 @@ export const LoginScreen = () => {
       {/* Submit Button */}
       <View className="mt-10 px-8 flex-row justify-between">
         <View className="flex-col gap-1 mt-[-10px]">
-          <Text className="text-white">{t("auth.dontHaveAccount")}</Text>
-          <Pressable 
+          <CommonText value={t("auth.dontHaveAccount")} />
+          <Pressable
             onPress={() => router.push("/sign-up")}
           >
-            <Text className="text-white font-bold underline">{t("auth.pressHere")}</Text>
+            <CommonText value={t("auth.pressHere")} className="font-bold underline" />
           </Pressable>
         </View>
-        
+
         <LoginButton email={email} password={password} />
       </View>
     </View>

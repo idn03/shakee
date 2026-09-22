@@ -1,9 +1,13 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { CommonText } from "@/src/shared/components/CommonText";
 
 export const HomeScreen = () => {
   return (
     <View className="flex-1">
-      <Text className="text-center text-white">This is Home screen aka Chatbook</Text>
+      <CommonText
+        value="This is Home screen aka Chatbook"
+        className="text-center"
+      />
     </View>
   );
 };
