@@ -12,12 +12,12 @@ import "../global.css";
 colorScheme.set("dark");
 
 const MainLayout = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAuthReady } = useAuth();
   const router = useRouter();
   const segments = useSegments();
 
   useEffect(() => {
-    if (isAuthenticated === undefined) return;
+    if (!isAuthReady) return;
 
     const inApp = segments[0] === "(app)";
 
@@ -26,7 +26,11 @@ const MainLayout = () => {
     } else if (!isAuthenticated && inApp) {
       router.replace("/login");
     }
-  }, [isAuthenticated, router, segments]);
+  }, [isAuthReady, isAuthenticated, router, segments]);
+
+  if (!isAuthReady) {
+    return null;
+  }
 
   return <Slot />;
 };
