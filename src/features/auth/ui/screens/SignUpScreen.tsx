@@ -1,13 +1,94 @@
+import { useState } from "react";
 import { View } from "react-native";
+import { useRouter } from "expo-router";
 import { useTranslation } from "@/src/i18n";
-import { AuthHeader } from "../components";
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
+import {
+  AuthHeader,
+  ProgressBar,
+  SignUpFooter,
+  SignUpStep1,
+  SignUpStep2,
+  SignUpStep3,
+} from "../components";
 
 export const SignUpScreen = () => {
   const { t } = useTranslation();
-  
+  const router = useRouter();
+  const { register } = useAuth();
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((step) => (step - 1) as 1 | 2 | 3);
+      return;
+    }
+
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/login");
+    }
+  };
+
+  const handlePrimaryPress = async () => {
+    if (currentStep < 3) {
+      setCurrentStep((step) => (step + 1) as 1 | 2 | 3);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await register(email.trim(), username.trim(), password, avatarUri ?? "");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <SignUpStep1 email={email} onChangeEmail={setEmail} />;
+      case 2:
+        return (
+          <SignUpStep2
+            username={username}
+            onChangeUsername={setUsername}
+            password={password}
+            onChangePassword={setPassword}
+          />
+        );
+      case 3:
+        return (
+          <SignUpStep3
+            avatarUri={avatarUri}
+            onChangeAvatar={setAvatarUri}
+          />
+        );
+    }
+  };
+
   return (
-    <View>
+    <View className="flex-1">
       <AuthHeader title={t("auth.signUp")} />
+      <View className="flex-1 justify-between px-3 pb-3">
+        <ProgressBar currentStep={currentStep} />
+
+        <View className="flex-1">{renderCurrentStep()}</View>
+
+        <SignUpFooter
+          currentStep={currentStep}
+          onBack={handleBack}
+          onPrimaryPress={handlePrimaryPress}
+          isSubmitting={isSubmitting}
+        />
+      </View>
     </View>
   );
 };
