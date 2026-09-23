@@ -25,6 +25,10 @@ export const translations = {
       invalidUsername: "Use only letters, numbers, periods, and underscores.",
       invalidPassword:
         "Use at least 8 characters, including an uppercase letter and a number.",
+      requiredPassword: "Enter your password.",
+      loginFailedTitle: "Login failed",
+      loginFailedMessage:
+        "The email or password is incorrect. Please try again.",
       nextStep: "Go to next step",
       finalSignUp: "Finish the registetration",
     },
@@ -54,6 +58,9 @@ export const translations = {
       invalidUsername:
         "Chỉ sử dụng chữ cái, chữ số, dấu chấm và dấu gạch dưới.",
       invalidPassword: "Dùng ít nhất 8 ký tự, bao gồm chữ in hoa và chữ số.",
+      requiredPassword: "Hãy nhập mật khẩu.",
+      loginFailedTitle: "Đăng nhập thất bại",
+      loginFailedMessage: "Email hoặc mật khẩu không đúng. Vui lòng thử lại.",
       nextStep: "Bước tiếp theo",
       finalSignUp: "Hoàn thành đăng ký",
     },

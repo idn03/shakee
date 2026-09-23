@@ -2,8 +2,7 @@ import { useState } from "react";
 import { View, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "@/src/i18n";
-import { useAuth } from "@/src/features/auth/hooks/useAuth";
-import { isEmail, isPasswordFormat } from "@/src/shared/utils/validators";
+import { useLogin } from "@/src/features/auth/hooks/useLogin";
 import { Mail, KeyRound } from "lucide-react-native";
 import { AuthHeader, InputBar, LoginButton } from "../components";
 import { CommonText } from "@/src/shared/components/CommonText";
@@ -11,24 +10,18 @@ import { CommonText } from "@/src/shared/components/CommonText";
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-
-  const isEmailValid = isEmail(email);
-  const isPasswordValid = isPasswordFormat(password);
-
-  const handleLogin = async () => {
-    setHasSubmitted(true);
-
-    if (!isEmailValid || !isPasswordValid) {
-      return;
-    }
-
-    await login(email.trim(), password);
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    hasSubmitted,
+    isLoggingIn,
+    isEmailValid,
+    isPasswordValid,
+    handleLogin,
+  } = useLogin();
 
   return (
     <View>
@@ -62,7 +55,7 @@ export const LoginScreen = () => {
           }
           value={password}
           onChangeText={setPassword}
-          helperText={t("auth.invalidPassword")}
+          helperText={t("auth.requiredPassword")}
           isShowHelperText={hasSubmitted && !isPasswordValid}
         />
       </View>
@@ -79,7 +72,7 @@ export const LoginScreen = () => {
           </Pressable>
         </View>
 
-        <LoginButton onPress={handleLogin} />
+        <LoginButton onPress={handleLogin} isDisabled={isLoggingIn} />
       </View>
     </View>
   );

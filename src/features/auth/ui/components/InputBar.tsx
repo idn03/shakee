@@ -43,7 +43,7 @@ export const InputBar: React.FC<InputBarProps> = ({ placeholder, icon, isPasswor
         )}
       </View>
       {isShowHelperText && (
-        <CommonText value={`! ${helperText}`} className="text-sm text-gray-500" />
+        <CommonText value={`! ${helperText}`} className="text-sm text-gray-500 ml-10" />
       )}
     </View>
   );
