@@ -7,7 +7,9 @@ import {
   updateProfile,
   type User,
 } from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth } from "@/src/features/auth/lib/firebaseAuth";
+import { db } from "@/src/shared/lib/firebase";
 
 interface AuthContextType {
   user: User | null;
@@ -57,10 +59,20 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
       password,
     );
 
+    const remoteAvatarUrl = avatarUrl.startsWith("https://") ? avatarUrl : null;
+
     await updateProfile(createdUser, {
       displayName: username,
-      // Only use a Firebase Storage download URL here, not a local `file://` URI.
-      ...(avatarUrl.startsWith("https://") ? { photoURL: avatarUrl } : {}),
+      ...(remoteAvatarUrl ? { photoURL: remoteAvatarUrl } : {}),
+    });
+
+    await setDoc(doc(db, "users", createdUser.uid), {
+      uid: createdUser.uid,
+      email: createdUser.email,
+      username,
+      avatarUrl: remoteAvatarUrl,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
   };
 

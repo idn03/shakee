@@ -130,6 +130,7 @@ export const SignUpScreen = () => {
           currentStep={currentStep}
           onBack={handleBack}
           onPrimaryPress={handlePrimaryPress}
+          isPrimaryDisabled={!isStepValid(currentStep)}
           isSubmitting={isSubmitting}
         />
       </View>
