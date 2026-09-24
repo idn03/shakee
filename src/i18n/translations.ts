@@ -37,6 +37,14 @@ export const translations = {
       nextStep: "Go to next step",
       finalSignUp: "Finish the registetration",
     },
+    home: {
+      emptyInbox:
+        "There are no messages at the moment, start by sending the first message.",
+      title: "Home",
+      addContact: "Add contact",
+      addContactUnavailableTitle: "Coming soon",
+      addContactUnavailableMessage: "Adding contacts is not available yet.",
+    },
   },
   vi: {
     password: "Mật khẩu",
@@ -73,6 +81,15 @@ export const translations = {
       signOutFailedMessage: "Không thể đăng xuất. Vui lòng thử lại.",
       nextStep: "Bước tiếp theo",
       finalSignUp: "Hoàn thành đăng ký",
+    },
+    home: {
+      emptyInbox:
+        "Hiện tại không có tin nhắn nào, hãy gửi tin nhắn đầu tiên ngay.",
+      title: "Trang Chủ",
+      addContact: "Thêm liên hệ",
+      addContactUnavailableTitle: "Sắp ra mắt",
+      addContactUnavailableMessage:
+        "Tính năng thêm liên hệ hiện chưa khả dụng.",
     },
   },
 } as const;

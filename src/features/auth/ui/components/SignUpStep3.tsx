@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { useTranslation } from "@/src/i18n";
 import { CommonText } from "@/src/shared/components/CommonText";
-import { AvatarPicker } from "./AvatarPicker";
+import { AvatarPicker } from "@/src/shared/components/AvatarPicker";
 
 interface SignUpStep3Props {
   avatarUri: string | null;
@@ -17,7 +17,13 @@ export const SignUpStep3: React.FC<SignUpStep3Props> = ({
   return (
     <View className="gap-8">
       <CommonText value={t("auth.step3Alert")} />
-      <AvatarPicker avatarUri={avatarUri} onChangeAvatar={onChangeAvatar} />
+      <AvatarPicker
+        avatarUri={avatarUri}
+        onChangeAvatar={onChangeAvatar}
+        accessibilityLabel={t("auth.avatarPreview")}
+        chooseAvatarLabel={t("auth.chooseAvatar")}
+        changeAvatarLabel={t("auth.changeAvatar")}
+      />
     </View>
   );
 };

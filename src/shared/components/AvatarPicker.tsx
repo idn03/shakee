@@ -1,21 +1,24 @@
 import { Image, Pressable, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useTranslation } from "@/src/i18n";
-import { CommonText } from "@/src/shared/components/CommonText";
+import { CommonText } from "./CommonText";
 
-const defaultAvatar = require("../../../../../assets/images/default-avatar.jpg");
+const defaultAvatar = require("@/assets/images/default-avatar.jpg");
 
 interface AvatarPickerProps {
   avatarUri: string | null;
   onChangeAvatar: (uri: string) => void;
+  accessibilityLabel: string;
+  chooseAvatarLabel: string;
+  changeAvatarLabel: string;
 }
 
 export const AvatarPicker: React.FC<AvatarPickerProps> = ({
   avatarUri,
   onChangeAvatar,
+  accessibilityLabel,
+  chooseAvatarLabel,
+  changeAvatarLabel,
 }) => {
-  const { t } = useTranslation();
-
   const handlePickAvatar = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
@@ -34,7 +37,7 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({
       <Image
         source={avatarUri ? { uri: avatarUri } : defaultAvatar}
         className="h-36 w-36 rounded-full border-2 border-white"
-        accessibilityLabel={t("auth.avatarPreview")}
+        accessibilityLabel={accessibilityLabel}
       />
 
       <Pressable
@@ -42,7 +45,7 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({
         onPress={handlePickAvatar}
       >
         <CommonText
-          value={avatarUri ? t("auth.changeAvatar") : t("auth.chooseAvatar")}
+          value={avatarUri ? changeAvatarLabel : chooseAvatarLabel}
           className="font-bold"
         />
       </Pressable>

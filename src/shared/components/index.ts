@@ -1,1 +1,2 @@
-export * from "./CommonText"
+export * from "./CommonText";
+export * from "./AvatarPicker";

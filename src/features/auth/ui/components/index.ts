@@ -7,5 +7,4 @@ export * from "./ProgressBar";
 export * from "./SignUpStep1";
 export * from "./SignUpStep2";
 export * from "./SignUpStep3";
-export * from "./AvatarPicker";
 export * from "./SignUpFooter";
