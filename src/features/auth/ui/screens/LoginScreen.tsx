@@ -36,7 +36,6 @@ export const LoginScreen = () => {
         <LottieView
           source={require("@/assets/lottie-json/handshake.json")}
           autoPlay
-          loop
           colorFilters={[{ keypath: "Line", color: "#FFFFFF" }]}
           style={{ width: 180, height: 180 }}
         />
