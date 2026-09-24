@@ -3,14 +3,24 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import BottomSheet, {
   BottomSheetFooter,
   BottomSheetView,
   type BottomSheetFooterProps,
   type BottomSheetProps,
 } from "@gorhom/bottom-sheet";
+import { cssInterop } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const NativeWindBottomSheet = cssInterop(BottomSheet, {
+  className: "backgroundStyle",
+  handleIndicatorClassName: "handleIndicatorStyle",
+});
+
+const NativeWindBottomSheetView = cssInterop(BottomSheetView, {
+  className: "style",
+});
 
 export interface ShakeeBottomSheetFooterButton {
   /** Text displayed in the button. */
@@ -62,9 +72,9 @@ export const ShakeeBottomSheet = forwardRef<
 
         return (
           <BottomSheetFooter {...footerProps} bottomInset={bottomInset}>
-            <View style={styles.footer}>
+            <View className="px-5 pt-3">
               {footerContent ?? (
-                <View style={styles.footerActions}>
+                <View className="flex-row gap-3">
                   {footerButtonCancel ? (
                     <FooterButton
                       action={footerButtonCancel}
@@ -90,18 +100,27 @@ export const ShakeeBottomSheet = forwardRef<
     );
 
     return (
-      <BottomSheet
+      <NativeWindBottomSheet
         ref={ref}
-        backgroundStyle={[styles.background, backgroundStyle]}
-        handleIndicatorStyle={[styles.handleIndicator, handleIndicatorStyle]}
+        className="rounded-3xl bg-neutral-900"
+        handleIndicatorClassName="w-10 bg-neutral-500"
+        backgroundStyle={backgroundStyle}
+        handleIndicatorStyle={handleIndicatorStyle}
         footerComponent={isFooterShow ? renderFooter : undefined}
         {...bottomSheetProps}
       >
-        <BottomSheetView style={styles.content}>
-          {headerTitle ? <Text style={styles.headerTitle}>{headerTitle}</Text> : null}
+        <NativeWindBottomSheetView
+          className="px-5 pb-6"
+          enableFooterMarginAdjustment={isFooterShow}
+        >
+          {headerTitle ? (
+            <Text className="mb-4 text-xl font-bold text-white">
+              {headerTitle}
+            </Text>
+          ) : null}
           {children}
-        </BottomSheetView>
-      </BottomSheet>
+        </NativeWindBottomSheetView>
+      </NativeWindBottomSheet>
     );
   },
 );
@@ -123,80 +142,14 @@ function FooterButton({ action, variant }: FooterButtonProps) {
       accessibilityState={{ disabled: action.disabled }}
       disabled={action.disabled}
       onPress={action.onPress}
-      style={({ pressed }) => [
-        styles.footerButton,
-        isPrimary ? styles.primaryButton : styles.secondaryButton,
-        action.disabled ? styles.disabledButton : null,
-        pressed && !action.disabled ? styles.pressedButton : null,
-      ]}
+      className={`min-h-12 flex-1 items-center justify-center rounded-xl px-4 active:opacity-75 ${
+        isPrimary ? "bg-white" : "border border-neutral-500"
+      } ${action.disabled ? "opacity-50" : ""}`}
       testID={action.testID}
     >
-      <Text style={isPrimary ? styles.primaryButtonText : styles.secondaryButtonText}>
+      <Text className={`text-base font-bold ${isPrimary ? "text-black" : "text-white"}`}>
         {action.label}
       </Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    backgroundColor: "#171717",
-    borderRadius: 24,
-  },
-  handleIndicator: {
-    backgroundColor: "#737373",
-    width: 40,
-  },
-  content: {
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-  },
-  headerTitle: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 16,
-  },
-  footer: {
-    backgroundColor: "#171717",
-    borderTopColor: "#404040",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-  },
-  footerActions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  footerButton: {
-    alignItems: "center",
-    borderRadius: 12,
-    flex: 1,
-    minHeight: 48,
-    justifyContent: "center",
-    paddingHorizontal: 16,
-  },
-  primaryButton: {
-    backgroundColor: "#FFFFFF",
-  },
-  secondaryButton: {
-    borderColor: "#737373",
-    borderWidth: 1,
-  },
-  primaryButtonText: {
-    color: "#000000",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  secondaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  disabledButton: {
-    opacity: 0.45,
-  },
-  pressedButton: {
-    opacity: 0.75,
-  },
-});
