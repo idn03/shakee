@@ -63,7 +63,7 @@ export const ShakeeBottomSheetModal = forwardRef<
 
         return (
           <BottomSheetFooter {...footerProps} bottomInset={bottomInset}>
-            <View className="border-t border-neutral-700 bg-neutral-900 px-5 pt-3">
+            <View className="px-3 pt-3">
               {footerContent ?? (
                 <View className="flex-row gap-3">
                   {footerButtonCancel ? (
