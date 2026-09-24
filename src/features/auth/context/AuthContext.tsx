@@ -53,27 +53,54 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
     password: string,
     avatarUrl: string,
   ) => {
-    const { user: createdUser } = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
+    if (__DEV__) {
+      console.info("[Auth] Registration started");
+    }
 
-    const remoteAvatarUrl = avatarUrl.startsWith("https://") ? avatarUrl : null;
+    try {
+      const { user: createdUser } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
 
-    await updateProfile(createdUser, {
-      displayName: username,
-      ...(remoteAvatarUrl ? { photoURL: remoteAvatarUrl } : {}),
-    });
+      if (__DEV__) {
+        console.info("[Auth] Firebase Auth account created", {
+          uid: createdUser.uid,
+        });
+      }
 
-    await setDoc(doc(db, "users", createdUser.uid), {
-      uid: createdUser.uid,
-      email: createdUser.email,
-      username,
-      avatarUrl: remoteAvatarUrl,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
+      const remoteAvatarUrl = avatarUrl.startsWith("https://")
+        ? avatarUrl
+        : null;
+
+      await updateProfile(createdUser, {
+        displayName: username,
+        ...(remoteAvatarUrl ? { photoURL: remoteAvatarUrl } : {}),
+      });
+
+      await setDoc(doc(db, "users", createdUser.uid), {
+        uid: createdUser.uid,
+        email: createdUser.email,
+        username,
+        avatarUrl: remoteAvatarUrl,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      if (__DEV__) {
+        console.info("[Auth] Firestore user profile created", {
+          uid: createdUser.uid,
+        });
+        console.info("[Auth] Registration completed");
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error("[Auth] Registration failed:", error);
+      }
+
+      throw error;
+    }
   };
 
   return (

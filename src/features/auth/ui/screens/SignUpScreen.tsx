@@ -1,13 +1,8 @@
-import { useState } from "react";
-import { View } from "react-native";
+import { useEffect } from "react";
+import { Alert, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "@/src/i18n";
-import { useAuth } from "@/src/features/auth/hooks/useAuth";
-import {
-  isEmail,
-  isPasswordFormat,
-  isUsername,
-} from "@/src/shared/utils/validators";
+import { useSignUp } from "@/src/features/auth/hooks/useSignUp";
 import {
   AuthHeader,
   ProgressBar,
@@ -20,33 +15,40 @@ import {
 export const SignUpScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { register } = useAuth();
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [avatarUri, setAvatarUri] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [attemptedStep, setAttemptedStep] = useState<0 | 1 | 2 | 3>(0);
+  const {
+    currentStep,
+    email,
+    setEmail,
+    username,
+    setUsername,
+    password,
+    setPassword,
+    avatarUri,
+    setAvatarUri,
+    isSubmitting,
+    attemptedStep,
+    isEmailValid,
+    isUsernameValid,
+    isPasswordValid,
+    isStepValid,
+    goToPreviousStep,
+    handlePrimaryPress,
+    hasRegistrationError,
+    dismissRegistrationError,
+  } = useSignUp();
 
-  const isEmailValid = isEmail(email);
-  const isUsernameValid = isUsername(username);
-  const isPasswordValid = isPasswordFormat(password);
-
-  const isStepValid = (step: 1 | 2 | 3) => {
-    switch (step) {
-      case 1:
-        return isEmailValid;
-      case 2:
-        return isUsernameValid && isPasswordValid;
-      case 3:
-        return true;
+  useEffect(() => {
+    if (!hasRegistrationError) {
+      return;
     }
-  };
+
+    Alert.alert(t("auth.signUpFailedTitle"), t("auth.signUpFailedMessage"), [
+      { text: "OK", onPress: dismissRegistrationError },
+    ]);
+  }, [dismissRegistrationError, hasRegistrationError, t]);
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep((step) => (step - 1) as 1 | 2 | 3);
+    if (goToPreviousStep()) {
       return;
     }
 
@@ -54,27 +56,6 @@ export const SignUpScreen = () => {
       router.back();
     } else {
       router.replace("/login");
-    }
-  };
-
-  const handlePrimaryPress = async () => {
-    setAttemptedStep(currentStep);
-
-    if (!isStepValid(currentStep)) {
-      return;
-    }
-
-    if (currentStep < 3) {
-      setCurrentStep((step) => (step + 1) as 1 | 2 | 3);
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      await register(email.trim(), username.trim(), password, avatarUri ?? "");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
