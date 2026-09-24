@@ -3,6 +3,7 @@ import { Slot, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { colorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { I18nProvider } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
@@ -38,12 +39,14 @@ const MainLayout = () => {
 export default function RootLayout() {
   return (
     <I18nProvider>
-      <SafeAreaView className="flex-1 bg-black">
-        <StatusBar style="light" translucent backgroundColor="transparent" />
-        <AuthContextProvider>
-          <MainLayout />
-        </AuthContextProvider>
-      </SafeAreaView>
+      <GestureHandlerRootView className="flex-1">
+        <SafeAreaView className="flex-1 bg-black">
+          <StatusBar style="light" translucent backgroundColor="transparent" />
+          <AuthContextProvider>
+            <MainLayout />
+          </AuthContextProvider>
+        </SafeAreaView>
+      </GestureHandlerRootView>
     </I18nProvider>
   );
 }
