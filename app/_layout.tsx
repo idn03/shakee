@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { colorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import { I18nProvider } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
@@ -40,12 +41,14 @@ export default function RootLayout() {
   return (
     <I18nProvider>
       <GestureHandlerRootView className="flex-1">
-        <SafeAreaView className="flex-1 bg-black">
-          <StatusBar style="light" translucent backgroundColor="transparent" />
-          <AuthContextProvider>
-            <MainLayout />
-          </AuthContextProvider>
-        </SafeAreaView>
+        <BottomSheetModalProvider>
+          <SafeAreaView className="flex-1 bg-black">
+            <StatusBar style="light" translucent backgroundColor="transparent" />
+            <AuthContextProvider>
+              <MainLayout />
+            </AuthContextProvider>
+          </SafeAreaView>
+        </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </I18nProvider>
   );
