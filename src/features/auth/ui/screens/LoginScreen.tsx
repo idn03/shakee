@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import { useTranslation } from "@/src/i18n";
 import { useLogin } from "@/src/features/auth/hooks/useLogin";
 import { Mail, KeyRound } from "lucide-react-native";
@@ -31,10 +32,18 @@ export const LoginScreen = () => {
         className="mt-1 text-center font-bold"
       />
 
-      <View className="h-[80px]" />
+      <View className="h-[180px] items-center justify-center">
+        <LottieView
+          source={require("@/assets/lottie-json/handshake.json")}
+          autoPlay
+          loop
+          colorFilters={[{ keypath: "Line", color: "#FFFFFF" }]}
+          style={{ width: 180, height: 180 }}
+        />
+      </View>
 
       {/* Input Section */}
-      <View className="mt-10 gap-10 px-8">
+      <View className="mt-2 gap-10 px-8">
         <InputBar
           placeholder="Email"
           icon={<Mail size={20} color={"#FFFFFF"} />}
