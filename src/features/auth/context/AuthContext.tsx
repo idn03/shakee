@@ -82,6 +82,7 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
       await setDoc(doc(db, "users", createdUser.uid), {
         uid: createdUser.uid,
         email: createdUser.email,
+        emailLowercase: createdUser.email?.toLowerCase() ?? email.toLowerCase(),
         username,
         avatarUrl: remoteAvatarUrl,
         createdAt: serverTimestamp(),

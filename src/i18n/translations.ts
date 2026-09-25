@@ -22,6 +22,8 @@ export const translations = {
       changeAvatar: "Change picture",
       avatarPreview: "Profile picture preview",
       invalidEmail: "Enter a valid email address.",
+      emailAlreadyExists: "An account with this email already exists.",
+      emailCheckFailed: "We couldn't check this email. Please try again.",
       invalidUsername: "Use only letters, numbers, periods, and underscores.",
       invalidPassword:
         "Use at least 8 characters, including an uppercase letter and a number.",
@@ -68,6 +70,8 @@ export const translations = {
       changeAvatar: "Đổi ảnh",
       avatarPreview: "Xem trước ảnh đại diện",
       invalidEmail: "Hãy nhập địa chỉ email hợp lệ.",
+      emailAlreadyExists: "Email này đã được đăng ký tài khoản.",
+      emailCheckFailed: "Không thể kiểm tra email. Vui lòng thử lại.",
       invalidUsername:
         "Chỉ sử dụng chữ cái, chữ số, dấu chấm và dấu gạch dưới.",
       invalidPassword: "Dùng ít nhất 8 ký tự, bao gồm chữ in hoa và chữ số.",
