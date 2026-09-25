@@ -5,7 +5,6 @@ import {
   isPasswordFormat,
   isUsername,
 } from "@/src/shared/utils/validators";
-import { emailExistsInFirestore } from "@/src/features/auth/lib/emailExistsInFirestore";
 
 type SignUpStep = 1 | 2 | 3;
 
@@ -17,9 +16,6 @@ export const useSignUp = () => {
   const [password, setPassword] = useState("");
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
-  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false);
-  const [emailCheckFailed, setEmailCheckFailed] = useState(false);
   const [attemptedStep, setAttemptedStep] = useState<0 | SignUpStep>(0);
   const [hasRegistrationError, setHasRegistrationError] = useState(false);
 
@@ -28,12 +24,6 @@ export const useSignUp = () => {
     [],
   );
 
-  const updateEmail = (value: string) => {
-    setEmail(value);
-    setEmailAlreadyExists(false);
-    setEmailCheckFailed(false);
-  };
-
   const isEmailValid = isEmail(email);
   const isUsernameValid = isUsername(username);
   const isPasswordValid = isPasswordFormat(password);
@@ -41,7 +31,7 @@ export const useSignUp = () => {
   const isStepValid = (step: SignUpStep) => {
     switch (step) {
       case 1:
-        return isEmailValid && !isCheckingEmail;
+        return isEmailValid;
       case 2:
         return isUsernameValid && isPasswordValid;
       case 3:
@@ -59,32 +49,14 @@ export const useSignUp = () => {
   };
 
   const handlePrimaryPress = async () => {
-    if (isSubmitting || isCheckingEmail) {
+    if (isSubmitting) {
       return;
     }
 
     setAttemptedStep(currentStep);
-    setEmailAlreadyExists(false);
-    setEmailCheckFailed(false);
 
     if (!isStepValid(currentStep)) {
       return;
-    }
-
-    if (currentStep === 1) {
-      setIsCheckingEmail(true);
-      try {
-        const exists = await emailExistsInFirestore(email.trim());
-        if (exists) {
-          setEmailAlreadyExists(true);
-          return;
-        }
-      } catch {
-        setEmailCheckFailed(true);
-        return;
-      } finally {
-        setIsCheckingEmail(false);
-      }
     }
 
     if (currentStep < 3) {
@@ -107,7 +79,7 @@ export const useSignUp = () => {
   return {
     currentStep,
     email,
-    setEmail: updateEmail,
+    setEmail,
     username,
     setUsername,
     password,
@@ -115,9 +87,6 @@ export const useSignUp = () => {
     avatarUri,
     setAvatarUri,
     isSubmitting,
-    isCheckingEmail,
-    emailAlreadyExists,
-    emailCheckFailed,
     attemptedStep,
     isEmailValid,
     isUsernameValid,

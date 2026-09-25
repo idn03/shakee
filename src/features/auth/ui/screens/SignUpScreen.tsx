@@ -26,11 +26,8 @@ export const SignUpScreen = () => {
     avatarUri,
     setAvatarUri,
     isSubmitting,
-    isCheckingEmail,
     attemptedStep,
     isEmailValid,
-    emailAlreadyExists,
-    emailCheckFailed,
     isUsernameValid,
     isPasswordValid,
     isStepValid,
@@ -70,15 +67,9 @@ export const SignUpScreen = () => {
             email={email}
             onChangeEmail={setEmail}
             emailError={
-              attemptedStep !== 1
-                ? undefined
-                : !isEmailValid
-                  ? t("auth.invalidEmail")
-                  : emailAlreadyExists
-                    ? t("auth.emailAlreadyExists")
-                    : emailCheckFailed
-                      ? t("auth.emailCheckFailed")
-                      : undefined
+              attemptedStep === 1 && !isEmailValid
+                ? t("auth.invalidEmail")
+                : undefined
             }
           />
         );
@@ -121,7 +112,7 @@ export const SignUpScreen = () => {
           onBack={handleBack}
           onPrimaryPress={handlePrimaryPress}
           isPrimaryDisabled={!isStepValid(currentStep)}
-          isSubmitting={isSubmitting || isCheckingEmail}
+          isSubmitting={isSubmitting}
         />
       </View>
     </View>
