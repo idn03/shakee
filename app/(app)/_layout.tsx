@@ -5,7 +5,7 @@ export default function AppLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: "#000000" },
+        contentStyle: { backgroundColor: "#413333" },
       }}
     >
       <Stack.Screen name="index" />
