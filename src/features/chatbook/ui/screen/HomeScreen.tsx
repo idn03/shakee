@@ -5,6 +5,7 @@ import { useTranslation } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { useLogOut } from "@/src/features/chatbook/hooks/useLogOut";
 import { useOtherUsers } from "@/src/features/chatbook/hooks/useOtherUsers";
+import { useSearch } from "@/src/features/chatbook/hooks/useSearch";
 import { ShakeeBottomSheetModal } from "@/src/shared/components";
 import { ChatList, EmptyInbox, HomeHeader, SearchInput } from "../components";
 
@@ -27,6 +28,7 @@ export const HomeScreen = () => {
       })),
     [users],
   );
+  const { query, setQuery, filteredList } = useSearch(chatList);
 
   if (__DEV__) {
     console.info("[Home] Chat list data", {
@@ -50,18 +52,21 @@ export const HomeScreen = () => {
 
         <View className="flex-1 px-3">
           <SearchInput
-            value=""
-            onChangeText={() => { }}
-            onSearch={() => { }}
+            value={query}
+            onChangeText={setQuery}
           />
           {isLoading ? (
             <View className="flex-1 items-center justify-center">
               <ActivityIndicator size="large" color="#FFFCE1" />
             </View>
-          ) : chatList.length > 0 ? (
-            <ChatList list={chatList} />
-          ) : (
+          ) : chatList.length === 0 ? (
             <EmptyInbox />
+          ) : filteredList.length > 0 ? (
+            <ChatList list={filteredList} />
+          ) : (
+            <Text className="mt-10 text-center text-white">
+              {t("home.noSearchResults")}
+            </Text>
           )}
         </View>
 

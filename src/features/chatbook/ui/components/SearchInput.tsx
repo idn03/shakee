@@ -4,10 +4,9 @@ import { Search } from "lucide-react-native";
 interface SearchInputProps {
   value: string;
   onChangeText: (text: string) => void;
-  onSearch: () => void;
 }
 
-export const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, onSearch }) => {
+export const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText }) => {
   return (
     <View className="h-10 flex-row items-center">
       <View className="absolute left-[12px] self-center">

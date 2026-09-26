@@ -43,6 +43,7 @@ export const translations = {
     home: {
       emptyInbox:
         "There are no messages at the moment, start by sending the first message.",
+      noSearchResults: "No users match your search.",
       title: "Home",
       addContact: "Add contact",
       addContactUnavailableTitle: "Coming soon",
@@ -91,6 +92,7 @@ export const translations = {
     home: {
       emptyInbox:
         "Hiện tại không có tin nhắn nào, hãy gửi tin nhắn đầu tiên ngay.",
+      noSearchResults: "Không tìm thấy người dùng phù hợp.",
       title: "Trang Chủ",
       addContact: "Thêm liên hệ",
       addContactUnavailableTitle: "Sắp ra mắt",
