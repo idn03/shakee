@@ -10,6 +10,7 @@ export interface ChatListItemProps {
   lastMessageDate: Date;
   lastMessageOwner: string;
   lastMessageContent: string;
+  seen: boolean;
 }
 
 export const ChatListItem: React.FC<ChatListItemProps> = ({
@@ -17,7 +18,8 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
   username,
   lastMessageDate,
   lastMessageOwner,
-  lastMessageContent
+  lastMessageContent,
+  seen,
 }) => {
   const { locale, t } = useTranslation();
   const { user } = useAuth();
@@ -35,41 +37,31 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
           day: "numeric",
         }).format(messageDate);
 
-  const isCurrentUserOwner =
-    Boolean(user) &&
-    (user?.displayName === lastMessageOwner || user?.uid === lastMessageOwner);
+  const isCurrentUserOwner = user?.uid === lastMessageOwner;
   const extractedOwner = isCurrentUserOwner ? `${t("chat.you")}:` : "";
 
   return (
     <View className="flex-row gap-2 items-center">
-      <AvatarCircle 
-        avatarUri={avatarUri}
-        size="md"
-      />
+      <AvatarCircle avatarUri={avatarUri} size="md" />
 
-      <View>
+      <View className="min-w-0 flex-1">
         <View className="flex-row gap-1">
-          <CommonText 
-            value={username}
-            className="!text-xs font-bold"
-          />
-          <CommonText 
+          <CommonText value={username} className="font-bold" />
+          <CommonText
             value="•"
-            className="text-gray-500"
+            className={seen ? "!text-gray-500" : undefined}
           />
-          <CommonText 
+          <CommonText
             value={extractedDate}
-            className="text-gray-500"
+            className={seen ? "!text-gray-500" : undefined}
           />
         </View>
         <View className="flex-row gap-1">
-          <CommonText 
-            value={extractedOwner}
-            className="!text-xs font-bold"
-          />
-          <CommonText 
+          {extractedOwner != "" && (<CommonText value={extractedOwner} className={seen ? "!text-gray-500" : undefined} />)}
+          <CommonText
             value={lastMessageContent}
-            className="text-gray-500"
+            className={`min-w-0 flex-1 ${seen ? "!text-gray-500" : ""}`}
+            numberOfLines={1}
           />
         </View>
       </View>

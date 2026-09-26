@@ -1,15 +1,19 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Alert, Text, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useTranslation } from "@/src/i18n";
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { useLogOut } from "@/src/features/chatbook/hooks/useLogOut";
+import { getMockChatList } from "@/src/features/chatbook/temp/mockChatList";
 import { ShakeeBottomSheetModal } from "@/src/shared/components";
-import { EmptyInbox, HomeHeader, SearchInput } from "../components";
+import { ChatList, EmptyInbox, HomeHeader, SearchInput } from "../components";
 
 export const HomeScreen = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { handleSignOut, isSigningOut } = useLogOut();
   const addContactSheetRef = useRef<BottomSheetModal<unknown>>(null);
+  const chatList = useMemo(() => getMockChatList(user?.uid), [user?.uid]);
 
   const handleOpenAddContact = () => {
     addContactSheetRef.current?.present();
@@ -31,13 +35,17 @@ export const HomeScreen = () => {
           isSigningOut={isSigningOut}
         />
 
-        <View className="px-3">
+        <View className="flex-1 px-3">
           <SearchInput
             value=""
             onChangeText={() => { }}
             onSearch={() => { }}
           />
-          <EmptyInbox />
+          {chatList.length > 0 ? (
+            <ChatList list={chatList} />
+          ) : (
+            <EmptyInbox />
+          )}
         </View>
 
       <ShakeeBottomSheetModal

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { CommonText } from "@/src/shared/components";
 import { ChatListItem, type ChatListItemProps } from "./ChatListItem";
 
@@ -30,22 +30,24 @@ export const ChatList: React.FC<ChatListProps> = ({ list }) => {
     .map(([title, data]) => ({ title, data }));
 
   return (
-    <View className="gap-4">
-      {sections.map(({ title, data }) => (
-        <View key={title} className="gap-2">
-          <View className="w-full p-2 bg-gray-500">
-            <CommonText value={title} className="font-bold" />
+    <ScrollView className="flex-1 mt-8" showsVerticalScrollIndicator={false}>
+      <View className="gap-4">
+        {sections.map(({ title, data }) => (
+          <View key={title} className="gap-2 mt-4">
+            <View className="w-full p-2 border-t border-white">
+              <CommonText value={title} className="font-bold" />
+            </View>
+            <View className="gap-2">
+              {data.map((item, index) => (
+                <ChatListItem
+                  key={`${item.username}-${item.lastMessageDate.getTime()}-${index}`}
+                  {...item}
+                />
+              ))}
+            </View>
           </View>
-          <View className="gap-2">
-            {data.map((item, index) => (
-              <ChatListItem
-                key={`${item.username}-${item.lastMessageDate.getTime()}-${index}`}
-                {...item}
-              />
-            ))}
-          </View>
-        </View>
-      ))}
-    </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
