@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function AuthLayout() {
+export default function AppLayout() {
   return (
     <Stack
       screenOptions={{
@@ -8,6 +8,8 @@ export default function AuthLayout() {
         contentStyle: { backgroundColor: "#000000" },
       }}
     >
+      <Stack.Screen name="index" />
+      <Stack.Screen name="[room-id]" />
     </Stack>
   );
 }

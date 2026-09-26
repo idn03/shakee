@@ -1,10 +1,12 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
+import { router } from "expo-router";
 import { useTranslation } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { CommonText, AvatarCircle } from "@/src/shared/components";
 import { isDateInCurrentWeek } from "@/src/shared/utils/date";
 
 export interface ChatListItemProps {
+  oppositeId: string;
   avatarUri: string;
   username: string;
   lastMessageDate: Date;
@@ -14,6 +16,7 @@ export interface ChatListItemProps {
 }
 
 export const ChatListItem: React.FC<ChatListItemProps> = ({
+  oppositeId,
   avatarUri,
   username,
   lastMessageDate,
@@ -41,7 +44,15 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
   const extractedOwner = isCurrentUserOwner ? `${t("chat.you")}:` : "";
 
   return (
-    <View className="flex-row gap-2 items-center">
+    <Pressable
+      className="flex-row gap-2 items-center"
+      onPress={() =>
+        router.push({
+          pathname: "/[room-id]",
+          params: { "room-id": oppositeId },
+        })
+      }
+    >
       <AvatarCircle avatarUri={avatarUri} size="md" />
 
       <View className="min-w-0 flex-1">
@@ -65,6 +76,6 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
           />
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
