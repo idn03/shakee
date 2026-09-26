@@ -50,21 +50,11 @@ export const HomeScreen = () => {
 
       <ShakeeBottomSheetModal
         ref={addContactSheetRef}
-        enableDynamicSizing={false}
-        snapPoints={["60%"]}
+        enableDynamicSizing
         enablePanDownToClose
         headerTitle={t("home.addContact")}
-        isFooterShow
-        footerButtonCancel={{
-          label: "Cancel",
-          onPress: () => addContactSheetRef.current?.dismiss(),
-        }}
-        footerButtonConfirm={{
-          label: "Continue",
-          onPress: handleConfirmAddContact,
-        }}
       >
-        <Text className="text-base leading-6 text-neutral-300">
+        <Text className="text-base leading-6 text-neutral-300 mb-4">
           This is an example bottom sheet. Add your contact form fields here.
         </Text>
       </ShakeeBottomSheetModal>
