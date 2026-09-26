@@ -29,7 +29,7 @@ export const useOtherUsers = (currentUserUid?: string) => {
       .catch((cause: unknown) => {
         if (isActive) {
           if (__DEV__) {
-            console.error("[Users] Failed to fetch users", cause);
+            console.log("[Users] Failed to fetch users", cause);
           }
           setError(cause instanceof Error ? cause : new Error("Could not fetch users"));
           setUsers([]);

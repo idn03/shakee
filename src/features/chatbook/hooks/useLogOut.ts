@@ -16,7 +16,7 @@ export const useLogOut = () => {
       await logout();
     } catch (error) {
       if (__DEV__) {
-        console.error("[Auth] Sign out failed:", error);
+        console.log("[Auth] Sign out failed:", error);
       }
 
       Alert.alert(t("auth.signOutFailedTitle"), t("auth.signOutFailedMessage"));

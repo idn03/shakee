@@ -22,6 +22,7 @@ interface AuthContextType {
     username: string,
     password: string,
     avatarUrl: string,
+    registrationId: string,
   ) => Promise<void>;
 }
 
@@ -52,9 +53,13 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
     username: string,
     password: string,
     avatarUrl: string,
+    registrationId: string,
   ) => {
     if (__DEV__) {
-      console.info("[Auth] Registration started");
+      console.info("[Auth] Firebase registration started", {
+        registrationId,
+        avatarProvided: avatarUrl.startsWith("https://"),
+      });
     }
 
     try {
@@ -66,6 +71,7 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
 
       if (__DEV__) {
         console.info("[Auth] Firebase Auth account created", {
+          registrationId,
           uid: createdUser.uid,
         });
       }
@@ -90,13 +96,16 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
 
       if (__DEV__) {
         console.info("[Auth] Firestore user profile created", {
+          registrationId,
           uid: createdUser.uid,
         });
-        console.info("[Auth] Registration completed");
       }
     } catch (error) {
       if (__DEV__) {
-        console.error("[Auth] Registration failed:", error);
+        console.log("[Auth] Firebase registration failed", {
+          registrationId,
+          error,
+        });
       }
 
       throw error;

@@ -32,7 +32,7 @@ export const useLogin = () => {
       await login(email.trim(), password);
     } catch (error) {
       if (__DEV__) {
-        console.error("[Auth] Login failed:", error);
+        console.log("[Auth] Login failed:", error);
       }
 
       Alert.alert(t("auth.loginFailedTitle"), t("auth.loginFailedMessage"));

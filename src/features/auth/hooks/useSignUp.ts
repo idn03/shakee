@@ -67,11 +67,42 @@ export const useSignUp = () => {
 
     setIsSubmitting(true);
     setHasRegistrationError(false);
+    const registrationId = `reg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    if (__DEV__) {
+      console.info("[Registration] Started", {
+        registrationId,
+        avatarSelected: Boolean(avatarUri),
+      });
+    }
 
     try {
-      const avatarUrl = avatarUri ? await uploadAvatar(avatarUri) : "";
-      await register(email.trim(), username.trim(), password, avatarUrl);
-    } catch {
+      const avatarUrl = avatarUri
+        ? await uploadAvatar(avatarUri, registrationId)
+        : "";
+
+      if (__DEV__) {
+        console.info("[Registration] Avatar upload stage finished", {
+          registrationId,
+          avatarUploaded: Boolean(avatarUrl),
+        });
+      }
+
+      await register(
+        email.trim(),
+        username.trim(),
+        password,
+        avatarUrl,
+        registrationId,
+      );
+
+      if (__DEV__) {
+        console.info("[Registration] Completed", { registrationId });
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.log("[Registration] Failed", { registrationId, error });
+      }
       setHasRegistrationError(true);
     } finally {
       setIsSubmitting(false);
