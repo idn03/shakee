@@ -1,5 +1,5 @@
 import { useMemo, useRef } from "react";
-import { Alert, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useTranslation } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
@@ -17,14 +17,6 @@ export const HomeScreen = () => {
 
   const handleOpenAddContact = () => {
     addContactSheetRef.current?.present();
-  };
-
-  const handleConfirmAddContact = () => {
-    addContactSheetRef.current?.dismiss();
-    Alert.alert(
-      t("home.addContactUnavailableTitle"),
-      t("home.addContactUnavailableMessage"),
-    );
   };
 
   return (
