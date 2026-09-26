@@ -9,10 +9,10 @@ export interface ChatListItemProps {
   oppositeId: string;
   avatarUri: string;
   username: string;
-  lastMessageDate: Date;
-  lastMessageOwner: string;
-  lastMessageContent: string;
-  seen: boolean;
+  lastMessageDate?: Date;
+  lastMessageOwner?: string;
+  lastMessageContent?: string;
+  seen?: boolean;
 }
 
 export const ChatListItem: React.FC<ChatListItemProps> = ({
@@ -27,9 +27,9 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
   const { locale, t } = useTranslation();
   const { user } = useAuth();
 
-  const messageDate = new Date(lastMessageDate);
-  const isThisWeek = isDateInCurrentWeek(messageDate);
-  const extractedDate = Number.isNaN(messageDate.getTime())
+  const messageDate = lastMessageDate ? new Date(lastMessageDate) : null;
+  const isThisWeek = messageDate ? isDateInCurrentWeek(messageDate) : false;
+  const extractedDate = !messageDate || Number.isNaN(messageDate.getTime())
     ? ""
     : isThisWeek
       ? new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
@@ -40,7 +40,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
           day: "numeric",
         }).format(messageDate);
 
-  const isCurrentUserOwner = user?.uid === lastMessageOwner;
+  const isCurrentUserOwner = !!lastMessageOwner && user?.uid === lastMessageOwner;
   const extractedOwner = isCurrentUserOwner ? `${t("chat.you")}:` : "";
 
   return (
@@ -58,23 +58,23 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
       <View className="min-w-0 flex-1">
         <View className="flex-row gap-1">
           <CommonText value={username} className="font-bold" />
-          <CommonText
+          {lastMessageContent ? <CommonText
             value="•"
             className={seen ? "!text-gray-500" : undefined}
-          />
+          /> : null}
           <CommonText
             value={extractedDate}
             className={seen ? "!text-gray-500" : undefined}
           />
         </View>
-        <View className="flex-row gap-1">
+        {lastMessageContent ? <View className="flex-row gap-1">
           {extractedOwner != "" && (<CommonText value={extractedOwner} className={seen ? "!text-gray-500" : undefined} />)}
           <CommonText
             value={lastMessageContent}
             className={`min-w-0 flex-1 ${seen ? "!text-gray-500" : ""}`}
             numberOfLines={1}
           />
-        </View>
+        </View> : null}
       </View>
     </Pressable>
   );

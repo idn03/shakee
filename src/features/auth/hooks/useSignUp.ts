@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { useAuth } from "./useAuth";
+import { uploadAvatar } from "@/src/shared/lib/cloudinary";
 import {
   isEmail,
   isPasswordFormat,
@@ -68,7 +69,8 @@ export const useSignUp = () => {
     setHasRegistrationError(false);
 
     try {
-      await register(email.trim(), username.trim(), password, avatarUri ?? "");
+      const avatarUrl = avatarUri ? await uploadAvatar(avatarUri) : "";
+      await register(email.trim(), username.trim(), password, avatarUrl);
     } catch {
       setHasRegistrationError(true);
     } finally {

@@ -40,7 +40,7 @@ export const ChatList: React.FC<ChatListProps> = ({ list }) => {
             <View className="gap-2">
               {data.map((item, index) => (
                 <ChatListItem
-                  key={`${item.username}-${item.lastMessageDate.getTime()}-${index}`}
+                  key={`${item.oppositeId}-${index}`}
                   {...item}
                 />
               ))}
