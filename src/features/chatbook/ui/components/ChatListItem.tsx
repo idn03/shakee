@@ -49,7 +49,7 @@ export const ChatListItem: React.FC<ChatListItemProps> = ({
       onPress={() =>
         router.push({
           pathname: "/[room-id]",
-          params: { "room-id": oppositeId },
+          params: { "room-id": oppositeId, username },
         })
       }
     >
