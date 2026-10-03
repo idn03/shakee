@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/shake-splashicon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#413333"
+      "backgroundColor": "#252021"
     },
     "ios": {
       "supportsTablet": true

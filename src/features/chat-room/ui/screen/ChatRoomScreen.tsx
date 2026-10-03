@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useTranslation } from "@/src/i18n";
 import { ShakeeBottomSheetModal, CommonText } from "@/src/shared/components";
-import { ChatRoomHeader, InputBar, LineCut } from "../components";
+import { ChatRoomHeader, InputBar, LineCut, Message } from "../components";
 
 export const ChatRoomScreen = () => {
   const { t } = useTranslation();
@@ -22,7 +22,20 @@ export const ChatRoomScreen = () => {
       />
 
       <ScrollView className="flex-1 px-3">
-        <View className="h-[60px]" />
+        <View className="h-[80px]" />
+
+        <Message
+          sentAt={dateTime}
+          content="Can I get your number?"
+          fromOposite
+          avatarUrl="https://i.pinimg.com/736x/91/2c/87/912c87fb67b1761052c341ed655f714f.jpg"
+        />
+
+        <Message
+          sentAt={dateTime}
+          content="My number is +84 090 101 43 68, please call me and talk with me every night haha."
+          fromOposite={false}
+        />
 
         <LineCut
           cutAt={dateTime}

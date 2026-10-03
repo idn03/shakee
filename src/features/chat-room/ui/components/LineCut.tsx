@@ -1,12 +1,22 @@
 import { View } from "react-native";
 import { CommonText } from "@/src/shared/components";
+import { useTranslation } from "@/src/i18n";
 
 interface LineCutProps {
   cutAt: Date;
 }
 
 export const LineCut: React.FC<LineCutProps> = ({ cutAt }) => {
-  const extractedCutAt = "Friday, 02/10"; // On the UI, will display Week day + DD/MM by extract cutAt, example: Thursday, 20/08 (both VI and EN for week day)
+  const { locale } = useTranslation();
+  const validCutAt = Number.isNaN(cutAt.getTime()) ? null : cutAt;
+  const extractedCutAt = validCutAt
+    ? `${new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
+        weekday: "long",
+      }).format(validCutAt)}, ${new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+      }).format(validCutAt)}`
+    : "";
   return (
     <View className="gap-1">
       <CommonText 

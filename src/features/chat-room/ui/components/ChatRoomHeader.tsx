@@ -14,7 +14,7 @@ export const ChatRoomHeader: React.FC<ChatRoomHeaderProps> = ({
   onOptionsPress,
 }) => {
   return (
-    <View className="absolute left-0 right-0 top-0 z-10 w-full flex-row items-center justify-between bg-[#413333]/85 px-6 py-4">
+    <View className="absolute left-0 right-0 top-0 z-10 w-full flex-row items-center justify-between bg-[#252021]/85 px-6 py-4">
       <View className="flex-row items-center">
         <Pressable
           accessibilityRole="button"

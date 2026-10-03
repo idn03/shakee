@@ -42,7 +42,7 @@ export default function RootLayout() {
     <I18nProvider>
       <GestureHandlerRootView className="flex-1">
         <BottomSheetModalProvider>
-          <SafeAreaView className="flex-1 bg-[#413333]">
+          <SafeAreaView className="flex-1 bg-[#252021]">
             <StatusBar style="dark" translucent backgroundColor="transparent" />
             <AuthContextProvider>
               <MainLayout />
