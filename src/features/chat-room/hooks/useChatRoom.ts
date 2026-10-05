@@ -23,9 +23,10 @@ export const useChatRoom = (userId?: string, partnerId?: string) => {
     setError(null);
     return onSnapshot(
       doc(db, "rooms", roomId),
+      { includeMetadataChanges: true },
       (roomSnapshot) => {
         if (roomSnapshot.exists()) {
-          setIsLoading(false);
+          if (!roomSnapshot.metadata.hasPendingWrites) setIsLoading(false);
           return;
         }
         void setDoc(doc(db, "rooms", roomId), {

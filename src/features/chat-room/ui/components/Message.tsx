@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { CommonText, AvatarCircle } from "@/src/shared/components";
+import { useTranslation } from "@/src/i18n";
 
 interface MessageProps {
   sentAt: Date;
@@ -9,7 +10,14 @@ interface MessageProps {
 }
 
 export const Message: React.FC<MessageProps> = ({ sentAt, content, fromOposite, avatarUrl }) => {
-  const extractedSentAt = "23:00"; // From sentAt: Date -> string with only hours, example "23:08"
+  const { locale } = useTranslation();
+  const extractedSentAt = Number.isNaN(sentAt.getTime())
+    ? ""
+    : new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }).format(sentAt);
 
   if (fromOposite) {
     return (

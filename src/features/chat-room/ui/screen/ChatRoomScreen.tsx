@@ -1,13 +1,22 @@
-import { useRef, useState } from "react";
-import { View, ScrollView, ActivityIndicator } from "react-native";
+import { useMemo, useRef, useState } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useTranslation } from "@/src/i18n";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { useChatRoom } from "@/src/features/chat-room/hooks/useChatRoom";
-import { useMessage } from "@/src/features/chat-room/hooks/useMessage";
+import { useMessage, type ChatMessage } from "@/src/features/chat-room/hooks/useMessage";
 import { ShakeeBottomSheetModal, CommonText } from "@/src/shared/components";
 import { ChatRoomHeader, InputBar, LineCut, Message } from "../components";
+
+type ChatRow =
+  | { type: "message"; key: string; message: ChatMessage }
+  | { type: "day-cut"; key: string; date: Date };
+
+const getLocalDayKey = (date: Date | null) => {
+  if (!date || Number.isNaN(date.getTime())) return "unknown-day";
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+};
 
 export const ChatRoomScreen = () => {
   const { t } = useTranslation();
@@ -16,10 +25,38 @@ export const ChatRoomScreen = () => {
   const params = useLocalSearchParams<{ username?: string; "room-id"?: string }>();
   const partnerId = params["room-id"];
   const username = params.username;
-  const { roomId } = useChatRoom(user?.uid, partnerId);
+  const { roomId, createOrOpenChatRoom } = useChatRoom(user?.uid, partnerId);
   const { messages, isLoading, sendMessage } = useMessage(roomId ?? undefined, user?.uid);
   const [draft, setDraft] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const isSendingRef = useRef(false);
   const optionsSheetRef = useRef<BottomSheetModal>(null);
+  const rows = useMemo(() => {
+    const nextRows: ChatRow[] = [];
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      const message = messages[index];
+      nextRows.push({ type: "message", key: message.id, message });
+      const olderMessage = messages[index - 1];
+      if (olderMessage && getLocalDayKey(message.createdAt) !== getLocalDayKey(olderMessage.createdAt)) {
+        nextRows.push({
+          type: "day-cut",
+          key: `day-cut-${olderMessage.id}`,
+          date: olderMessage.createdAt ?? new Date(0),
+        });
+      }
+    }
+    return nextRows;
+  }, [messages]);
+
+  const renderRow = ({ item }: { item: ChatRow }) => item.type === "day-cut" ? (
+    <LineCut cutAt={item.date} />
+  ) : (
+    <Message
+      sentAt={item.message.createdAt ?? new Date()}
+      content={item.message.content}
+      fromOposite={item.message.userId !== user?.uid}
+    />
+  );
 
   return (
     <View className="flex-1">
@@ -29,24 +66,32 @@ export const ChatRoomScreen = () => {
         onOptionsPress={() => optionsSheetRef.current?.present()}
       />
 
-      <ScrollView className="flex-1 px-3">
-        <View className="h-[80px]" />
-        {isLoading ? <ActivityIndicator color="#FFFCE1" /> : messages.map((message) => (
-          <Message
-            key={message.id}
-            sentAt={message.createdAt ?? new Date()}
-            content={message.content}
-            fromOposite={message.userId !== user?.uid}
-          />
-        ))}
-        <LineCut cutAt={messages[messages.length - 1]?.createdAt ?? new Date()} />
-      </ScrollView>
+      <FlatList
+        className="flex-1 px-3"
+        data={rows}
+        renderItem={renderRow}
+        keyExtractor={(item) => item.key}
+        inverted
+        contentContainerStyle={{ paddingTop: 40, flexGrow: 1 }}
+        ListEmptyComponent={isLoading ? <View className="flex-1 items-center justify-center"><ActivityIndicator color="#FFFCE1" /></View> : null}
+      />
 
       <InputBar
         value={draft}
+        disabled={isSending}
         onChangeText={setDraft}
         onSend={(content) => {
-          void sendMessage(content).then(() => setDraft("")).catch((cause) => console.warn("Could not send message", cause));
+          if (isSendingRef.current) return;
+          isSendingRef.current = true;
+          setIsSending(true);
+          void createOrOpenChatRoom()
+            .then(() => sendMessage(content))
+            .then(() => setDraft(""))
+            .catch((cause) => console.warn("Could not send message", cause))
+            .finally(() => {
+              isSendingRef.current = false;
+              setIsSending(false);
+            });
         }}
       />
 

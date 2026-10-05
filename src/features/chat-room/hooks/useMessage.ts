@@ -3,6 +3,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDocs,
   onSnapshot,
   query,
   serverTimestamp,
@@ -29,6 +30,23 @@ const toDate = (value: unknown): Date | null => {
   return null;
 };
 
+const toChatMessage = (id: string, roomId: string, data: Record<string, unknown>): ChatMessage => ({
+  id,
+  roomId,
+  userId: typeof data.userId === "string" ? data.userId : "",
+  content: typeof data.content === "string" ? data.content : "",
+  hasRead: data.hasRead === true,
+  createdAt: toDate(data.createdAt),
+});
+
+export const getMessageList = async (roomId: string): Promise<ChatMessage[]> => {
+  const messagesQuery = query(collection(db, "messages"), where("roomId", "==", roomId));
+  const snapshot = await getDocs(messagesQuery);
+  return snapshot.docs
+    .map((messageDoc) => toChatMessage(messageDoc.id, roomId, messageDoc.data()))
+    .sort((first, second) => (first.createdAt?.getTime() ?? 0) - (second.createdAt?.getTime() ?? 0));
+};
+
 export const useMessage = (roomId?: string, currentUserUid?: string) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(!!roomId);
@@ -46,17 +64,9 @@ export const useMessage = (roomId?: string, currentUserUid?: string) => {
     return onSnapshot(
       query(collection(db, "messages"), where("roomId", "==", roomId)),
       (snapshot) => {
-        const nextMessages = snapshot.docs.map((messageDoc) => {
-          const data = messageDoc.data();
-          return {
-            id: messageDoc.id,
-            roomId,
-            userId: typeof data.userId === "string" ? data.userId : "",
-            content: typeof data.content === "string" ? data.content : "",
-            hasRead: data.hasRead === true,
-            createdAt: toDate(data.createdAt),
-          } satisfies ChatMessage;
-        }).sort((first, second) => (first.createdAt?.getTime() ?? 0) - (second.createdAt?.getTime() ?? 0));
+        const nextMessages = snapshot.docs
+          .map((messageDoc) => toChatMessage(messageDoc.id, roomId, messageDoc.data()))
+          .sort((first, second) => (first.createdAt?.getTime() ?? 0) - (second.createdAt?.getTime() ?? 0));
         setMessages(nextMessages);
         setIsLoading(false);
 
