@@ -1,17 +1,25 @@
-import { useRef } from "react";
-import { View, ScrollView } from "react-native";
+import { useRef, useState } from "react";
+import { View, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useTranslation } from "@/src/i18n";
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
+import { useChatRoom } from "@/src/features/chat-room/hooks/useChatRoom";
+import { useMessage } from "@/src/features/chat-room/hooks/useMessage";
 import { ShakeeBottomSheetModal, CommonText } from "@/src/shared/components";
 import { ChatRoomHeader, InputBar, LineCut, Message } from "../components";
 
 export const ChatRoomScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { username } = useLocalSearchParams<{ username?: string }>();
+  const { user } = useAuth();
+  const params = useLocalSearchParams<{ username?: string; "room-id"?: string }>();
+  const partnerId = params["room-id"];
+  const username = params.username;
+  const { roomId } = useChatRoom(user?.uid, partnerId);
+  const { messages, isLoading, sendMessage } = useMessage(roomId ?? undefined, user?.uid);
+  const [draft, setDraft] = useState("");
   const optionsSheetRef = useRef<BottomSheetModal>(null);
-  let dateTime = new Date();
 
   return (
     <View className="flex-1">
@@ -23,29 +31,23 @@ export const ChatRoomScreen = () => {
 
       <ScrollView className="flex-1 px-3">
         <View className="h-[80px]" />
-
-        <Message
-          sentAt={dateTime}
-          content="Can I get your number?"
-          fromOposite
-          avatarUrl="https://i.pinimg.com/736x/91/2c/87/912c87fb67b1761052c341ed655f714f.jpg"
-        />
-
-        <Message
-          sentAt={dateTime}
-          content="My number is +84 090 101 43 68, please call me and talk with me every night haha."
-          fromOposite={false}
-        />
-
-        <LineCut
-          cutAt={dateTime}
-        />
+        {isLoading ? <ActivityIndicator color="#FFFCE1" /> : messages.map((message) => (
+          <Message
+            key={message.id}
+            sentAt={message.createdAt ?? new Date()}
+            content={message.content}
+            fromOposite={message.userId !== user?.uid}
+          />
+        ))}
+        <LineCut cutAt={messages[messages.length - 1]?.createdAt ?? new Date()} />
       </ScrollView>
 
       <InputBar
-        value=""
-        onChangeText={() => { }}
-        onSend={() => { }}
+        value={draft}
+        onChangeText={setDraft}
+        onSend={(content) => {
+          void sendMessage(content).then(() => setDraft("")).catch((cause) => console.warn("Could not send message", cause));
+        }}
       />
 
       <ShakeeBottomSheetModal

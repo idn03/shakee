@@ -17,12 +17,18 @@ export const InputBar: React.FC<InputBarProps> = ({ value, onChangeText, onSend 
           onChangeText={onChangeText}
           multiline
         />
-        <View className="absolute right-[6px] self-center bg-white p-1 rounded-full">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Send message"
+          disabled={!value.trim()}
+          onPress={() => onSend(value)}
+          className="absolute right-[6px] self-center bg-white p-1 rounded-full"
+        >
           <ArrowUp
             size={18}
             color={"#000000"}
           />
-        </View>
+        </Pressable>
       </View>
     </View>
   );
